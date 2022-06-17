@@ -18,7 +18,7 @@ func (c *Commit) SetCommand(cmd Cmd) {
 }
 
 func (c Commit) Render(w io.Writer, model table.Model, index int) {
-	s := string(c.command)
+	s := fmt.Sprintf("%s\t%s\t%s", c.command, c.hash, c.title)
 	if index == model.Cursor() {
 		s = model.Styles.SelectedRow.Render(s)
 	}
@@ -35,3 +35,22 @@ const (
 	CmdFixup      = 'f'
 	CmdDrop       = 'd'
 )
+
+func (cmd Cmd) String() string {
+	switch cmd {
+	case CmdPick:
+		return "pick"
+	case CmdReword:
+		return "reword"
+	case CmdEdit:
+		return "edit"
+	case CmdSquash:
+		return "squash"
+	case CmdFixup:
+		return "fixup"
+	case CmdDrop:
+		return "drop"
+	default:
+		return string(cmd)
+	}
+}

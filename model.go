@@ -61,7 +61,7 @@ func NewModel() Model {
 		w = 80
 		h = 24
 	}
-	tbl := table.New([]string{"ID", "NAME", "AGE", "CITY"}, w, h)
+	tbl := table.New([]string{"Command", "ID", "Title"}, w, h)
 
 	rows := make([]table.Row, len(commits))
 	for i, v := range commits {
