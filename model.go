@@ -34,6 +34,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 
 				m.table.SetRows(rows)
+				return m, nil
 			}
 
 		case "enter":
@@ -55,7 +56,7 @@ func (m Model) View() string {
 	return m.table.View()
 }
 
-func NewModel() Model {
+func NewModel(commits []Commit) Model {
 	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		w = 80

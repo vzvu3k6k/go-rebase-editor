@@ -25,6 +25,10 @@ func (c Commit) Render(w io.Writer, model table.Model, index int) {
 	fmt.Fprintln(w, s)
 }
 
+func (c *Commit) String() string {
+	return fmt.Sprintf("%s %s %s", c.command, c.hash, c.title)
+}
+
 type Cmd rune
 
 const (
