@@ -23,6 +23,20 @@ func TestNoChange(t *testing.T) {
 	})
 }
 
+func TestCancel(t *testing.T) {
+	m := prepareModel([]Commit{
+		{command: CmdPick, hash: "00000001", title: "1st"},
+	})
+
+	m, cmd := applyKeyMsgs(m, []tea.KeyMsg{
+		{Type: tea.KeyEsc},
+	})
+	assert.Equal(t, cmd(), tea.Quit())
+
+	// returns empty commits to abort rebasing
+	assertCommits(t, m, []Commit{})
+}
+
 func TestCommandChange(t *testing.T) {
 	m := prepareModel([]Commit{
 		{command: CmdPick, hash: "00000001", title: "1st"},
