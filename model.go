@@ -22,6 +22,23 @@ type Model struct {
 	table   table.Model
 }
 
+func NewModel(commits Commits) Model {
+	w, h, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		w = 80
+		h = 24
+	}
+	tbl := table.New([]string{"Command", "ID", "Title"}, w, h)
+
+	m := Model{
+		commits: commits,
+		table:   tbl,
+	}
+	m.applyCommits()
+
+	return m
+}
+
 func (m Model) Init() tea.Cmd {
 	return nil
 }
@@ -78,21 +95,4 @@ func (m *Model) applyCommits() {
 		rows[i] = v
 	}
 	m.table.SetRows(rows)
-}
-
-func NewModel(commits Commits) Model {
-	w, h, err := term.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		w = 80
-		h = 24
-	}
-	tbl := table.New([]string{"Command", "ID", "Title"}, w, h)
-
-	m := Model{
-		commits: commits,
-		table:   tbl,
-	}
-	m.applyCommits()
-
-	return m
 }
