@@ -41,12 +41,13 @@ func readCommits(filepath string) ([]Commit, error) {
 }
 
 func editCommits(commits []Commit) ([]Commit, error) {
-	m := NewModel(commits)
+	var m tea.Model = NewModel(commits)
 	p := tea.NewProgram(m, tea.WithAltScreen())
-	if err := p.Start(); err != nil {
+	m, err := p.StartReturningModel()
+	if err != nil {
 		return nil, err
 	}
-	return m.commits, nil
+	return m.(Model).commits, nil
 }
 
 func writeCommits(filepath string, commits []Commit) error {
