@@ -5,7 +5,9 @@ go 1.18
 require (
 	github.com/calyptia/go-bubble-table v0.2.1
 	github.com/charmbracelet/bubbletea v0.21.0
+	github.com/google/go-cmp v0.5.8
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
+	gotest.tools/v3 v3.3.0
 )
 
 require (
