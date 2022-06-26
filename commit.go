@@ -16,6 +16,14 @@ func (c *Commit) SetCommand(cmd Cmd) {
 	c.command = cmd
 }
 
+func (c Commit) Render(w io.Writer, model table.Model, index int) {
+	s := string(c.Command())
+	if index == model.Cursor() {
+		s = model.Styles.SelectedRow.Render(s)
+	}
+	fmt.Fprintln(w, s)
+}
+
 type Cmd rune
 
 const (
