@@ -21,6 +21,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
+		case "q", "enter":
+			return m, tea.Quit
 		case "esc", "ctrl+c":
 			m.commits = []Commit{}
 			return m, tea.Quit
@@ -37,9 +39,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.table.SetRows(rows)
 				return m, nil
 			}
-
-		case "enter":
-			return m, tea.Quit
 		}
 	case tea.WindowSizeMsg:
 		m.table.SetSize(
