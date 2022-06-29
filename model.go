@@ -30,13 +30,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if c, ok := m.table.SelectedRow().(Commit); ok {
 				c.SetCommand(CmdEdit)
 				m.commits[m.table.Cursor()] = c
-
-				rows := make([]table.Row, len(m.commits))
-				for i, v := range m.commits {
-					rows[i] = v
-				}
-
-				m.table.SetRows(rows)
+				m.applyCommits()
 				return m, nil
 			}
 		}
@@ -56,6 +50,14 @@ func (m Model) View() string {
 	return m.table.View()
 }
 
+func (m *Model) applyCommits() {
+	rows := make([]table.Row, len(m.commits))
+	for i, v := range m.commits {
+		rows[i] = v
+	}
+	m.table.SetRows(rows)
+}
+
 func NewModel(commits []Commit) Model {
 	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
@@ -64,14 +66,11 @@ func NewModel(commits []Commit) Model {
 	}
 	tbl := table.New([]string{"Command", "ID", "Title"}, w, h)
 
-	rows := make([]table.Row, len(commits))
-	for i, v := range commits {
-		rows[i] = v
-	}
-	tbl.SetRows(rows)
-
-	return Model{
+	m := Model{
 		commits: commits,
 		table:   tbl,
 	}
+	m.applyCommits()
+
+	return m
 }
