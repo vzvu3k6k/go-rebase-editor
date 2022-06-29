@@ -30,7 +30,7 @@ func Run(args []string) error {
 	return nil
 }
 
-func readCommits(filepath string) ([]Commit, error) {
+func readCommits(filepath string) (Commits, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func readCommits(filepath string) ([]Commit, error) {
 	return ParseCommits(file), nil
 }
 
-func editCommits(commits []Commit) ([]Commit, error) {
+func editCommits(commits Commits) ([]Commit, error) {
 	var m tea.Model = NewModel(commits)
 	p := tea.NewProgram(m, tea.WithAltScreen())
 	m, err := p.StartReturningModel()
@@ -50,7 +50,7 @@ func editCommits(commits []Commit) ([]Commit, error) {
 	return m.(Model).commits, nil
 }
 
-func writeCommits(filepath string, commits []Commit) error {
+func writeCommits(filepath string, commits Commits) error {
 	file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		return err

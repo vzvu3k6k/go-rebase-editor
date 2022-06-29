@@ -9,7 +9,7 @@ import (
 )
 
 func TestNoChange(t *testing.T) {
-	m := prepareModel([]Commit{
+	m := prepareModel(Commits{
 		{command: CmdPick, hash: "00000000", title: "foo"},
 	})
 
@@ -18,13 +18,13 @@ func TestNoChange(t *testing.T) {
 	})
 	assert.Equal(t, cmd(), tea.Quit())
 
-	assertCommits(t, m, []Commit{
+	assertCommits(t, m, Commits{
 		{command: CmdPick, hash: "00000000", title: "foo"},
 	})
 }
 
 func TestCancel(t *testing.T) {
-	m := prepareModel([]Commit{
+	m := prepareModel(Commits{
 		{command: CmdPick, hash: "00000001", title: "1st"},
 	})
 
@@ -34,11 +34,11 @@ func TestCancel(t *testing.T) {
 	assert.Equal(t, cmd(), tea.Quit())
 
 	// returns empty commits to abort rebasing
-	assertCommits(t, m, []Commit{})
+	assertCommits(t, m, Commits{})
 }
 
 func TestCommandChange(t *testing.T) {
-	m := prepareModel([]Commit{
+	m := prepareModel(Commits{
 		{command: CmdPick, hash: "00000001", title: "1st"},
 		{command: CmdPick, hash: "00000002", title: "2nd"},
 	})
@@ -48,13 +48,13 @@ func TestCommandChange(t *testing.T) {
 		{Type: tea.KeyRunes, Runes: []rune{'e'}},
 	})
 
-	assertCommits(t, m, []Commit{
+	assertCommits(t, m, Commits{
 		{command: CmdPick, hash: "00000001", title: "1st"},
 		{command: CmdEdit, hash: "00000002", title: "2nd"},
 	})
 }
 
-func prepareModel(commits []Commit) tea.Model {
+func prepareModel(commits Commits) tea.Model {
 	m := NewModel(commits)
 	m.Init()
 	return m
@@ -68,7 +68,7 @@ func applyKeyMsgs(m tea.Model, msgs []tea.KeyMsg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func assertCommits(t *testing.T, m tea.Model, commits []Commit) {
+func assertCommits(t *testing.T, m tea.Model, commits Commits) {
 	model := m.(Model)
 	assert.DeepEqual(t, model.commits, commits, cmp.AllowUnexported(Commit{}))
 }

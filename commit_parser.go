@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func ParseCommits(r io.Reader) []Commit {
-	var commits []Commit
+func ParseCommits(r io.Reader) Commits {
+	var commits Commits
 
 	s := bufio.NewScanner(r)
 	for s.Scan() {

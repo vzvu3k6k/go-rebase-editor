@@ -18,7 +18,7 @@ var keyToCmd = map[string]Cmd{
 }
 
 type Model struct {
-	commits []Commit
+	commits Commits
 	table   table.Model
 }
 
@@ -33,7 +33,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "enter":
 			return m, tea.Quit
 		case "esc", "ctrl+c":
-			m.commits = []Commit{}
+			m.commits = Commits{}
 			return m, tea.Quit
 		default:
 			if cmd, ok := keyToCmd[keypress]; ok {
@@ -66,7 +66,7 @@ func (m *Model) applyCommits() {
 	m.table.SetRows(rows)
 }
 
-func NewModel(commits []Commit) Model {
+func NewModel(commits Commits) Model {
 	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		w = 80

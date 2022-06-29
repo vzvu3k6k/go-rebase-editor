@@ -16,7 +16,7 @@ pick facefeed Goes on
 
 	commits := ParseCommits(strings.NewReader(todo))
 
-	assert.DeepEqual(t, commits, []Commit{
+	assert.DeepEqual(t, commits, Commits{
 		{
 			command: CmdPick,
 			hash:    "deadbeef",
