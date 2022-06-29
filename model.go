@@ -8,6 +8,15 @@ import (
 	"golang.org/x/term"
 )
 
+var keyToCmd = map[string]Cmd{
+	"e": CmdEdit,
+	"r": CmdReword,
+	"p": CmdPick,
+	"s": CmdSquash,
+	"f": CmdFixup,
+	"d": CmdDrop,
+}
+
 type Model struct {
 	commits []Commit
 	table   table.Model
@@ -26,10 +35,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc", "ctrl+c":
 			m.commits = []Commit{}
 			return m, tea.Quit
-		case "e":
-			if c, ok := m.table.SelectedRow().(Commit); ok {
-				c.SetCommand(CmdEdit)
-				m.commits[m.table.Cursor()] = c
+		default:
+			if cmd, ok := keyToCmd[keypress]; ok {
+				m.commits[m.table.Cursor()].SetCommand(cmd)
 				m.applyCommits()
 				return m, nil
 			}
