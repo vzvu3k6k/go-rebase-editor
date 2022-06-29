@@ -54,6 +54,24 @@ func TestCommandChange(t *testing.T) {
 	})
 }
 
+func TestMove(t *testing.T) {
+	m := prepareModel(Commits{
+		{command: CmdPick, hash: "00000001", title: "1st"},
+		{command: CmdPick, hash: "00000002", title: "2nd"},
+	})
+
+	m, _ = applyKeyMsgs(m, []tea.KeyMsg{
+		{Type: tea.KeyDown},
+		{Type: tea.KeyLeft},
+		{Type: tea.KeyEnter},
+	})
+
+	assertCommits(t, m, Commits{
+		{command: CmdPick, hash: "00000002", title: "2nd"},
+		{command: CmdPick, hash: "00000001", title: "1st"},
+	})
+}
+
 func prepareModel(commits Commits) tea.Model {
 	m := NewModel(commits)
 	m.Init()

@@ -35,6 +35,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc", "ctrl+c":
 			m.commits = Commits{}
 			return m, tea.Quit
+		case "left":
+			if !m.table.CursorIsAtTop() {
+				m.commits.MoveUp(m.table.Cursor())
+				m.applyCommits()
+				m.table.GoUp()
+			}
+			return m, nil
+		case "right":
+			if !m.table.CursorIsAtBottom() {
+				m.commits.MoveDown(m.table.Cursor())
+				m.applyCommits()
+				m.table.GoDown()
+			}
+			return m, nil
 		default:
 			if cmd, ok := keyToCmd[keypress]; ok {
 				m.commits[m.table.Cursor()].SetCommand(cmd)
