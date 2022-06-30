@@ -22,6 +22,8 @@ type Model struct {
 	table   table.Model
 }
 
+var _ tea.Model = (*Model)(nil)
+
 func NewModel(commits Commits) Model {
 	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
