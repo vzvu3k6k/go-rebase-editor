@@ -30,11 +30,11 @@ type Cmd rune
 
 const (
 	CmdPick   Cmd = 'p'
-	CmdReword     = 'r'
-	CmdEdit       = 'e'
-	CmdSquash     = 's'
-	CmdFixup      = 'f'
-	CmdDrop       = 'd'
+	CmdReword Cmd = 'r'
+	CmdEdit   Cmd = 'e'
+	CmdSquash Cmd = 's'
+	CmdFixup  Cmd = 'f'
+	CmdDrop   Cmd = 'd'
 )
 
 func (cmd Cmd) String() string {
