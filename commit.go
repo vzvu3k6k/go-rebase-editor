@@ -2,9 +2,6 @@ package rebase
 
 import (
 	"fmt"
-	"io"
-
-	table "github.com/calyptia/go-bubble-table"
 )
 
 type Commit struct {
@@ -17,12 +14,12 @@ func (c *Commit) SetCommand(cmd Cmd) {
 	c.command = cmd
 }
 
-func (c Commit) Render(w io.Writer, model table.Model, index int) {
-	s := fmt.Sprintf("%s\t%s\t%s", c.command, c.hash, c.title)
-	if index == model.Cursor() {
-		s = model.Styles.SelectedRow.Render(s)
+func (c *Commit) Render() []string {
+	return []string{
+		c.command.String(),
+		c.hash,
+		c.title,
 	}
-	fmt.Fprintln(w, s)
 }
 
 func (c *Commit) String() string {
