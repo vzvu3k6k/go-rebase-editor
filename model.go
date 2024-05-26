@@ -3,7 +3,7 @@ package rebase
 import (
 	"os"
 
-	table "github.com/calyptia/go-bubble-table"
+	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"golang.org/x/term"
 )
@@ -30,11 +30,10 @@ func NewModel(commits Commits) Model {
 		w = 80
 		h = 24
 	}
-	tbl := table.New([]string{"Command", "ID", "Title"}, w, h)
 
 	m := Model{
 		commits: commits,
-		table:   tbl,
+		table:   buildTable(w, h),
 	}
 	m.applyCommits()
 
@@ -55,17 +54,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.commits = Commits{}
 			return m, tea.Quit
 		case "left":
-			if !m.table.CursorIsAtTop() {
+			if m.table.Cursor() > 0 {
 				m.commits.MoveUp(m.table.Cursor())
 				m.applyCommits()
-				m.table.GoUp()
+				m.table.MoveUp(1)
 			}
 			return m, nil
 		case "right":
-			if !m.table.CursorIsAtBottom() {
+			if m.table.Cursor() < len(m.table.Rows())-1 {
 				m.commits.MoveDown(m.table.Cursor())
 				m.applyCommits()
-				m.table.GoDown()
+				m.table.MoveDown(1)
 			}
 			return m, nil
 		default:
@@ -76,15 +75,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	case tea.WindowSizeMsg:
-		m.table.SetSize(
-			msg.Width,
-			msg.Height,
-		)
+		m.table = buildTable(msg.Width, msg.Height)
+		m.applyCommits()
+		m.table.UpdateViewport()
 	}
 
-	var cmd tea.Cmd
-	m.table, cmd = m.table.Update(msg)
-	return m, cmd
+	m.table, _ = m.table.Update(msg)
+	return m, nil
 }
 
 func (m Model) View() string {
@@ -94,7 +91,25 @@ func (m Model) View() string {
 func (m *Model) applyCommits() {
 	rows := make([]table.Row, len(m.commits))
 	for i, v := range m.commits {
-		rows[i] = v
+		rows[i] = v.Render()
 	}
 	m.table.SetRows(rows)
+}
+
+const (
+	commandWidth = 8
+	idWidth      = 8
+	headerHeight = 1
+)
+
+func buildTable(w, h int) table.Model {
+	return table.New(
+		table.WithColumns([]table.Column{
+			{Title: "Command", Width: commandWidth},
+			{Title: "ID", Width: idWidth},
+			{Title: "Title", Width: w - commandWidth - idWidth},
+		}),
+		table.WithFocused(true),
+		table.WithHeight(h-headerHeight),
+	)
 }
