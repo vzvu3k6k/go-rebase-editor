@@ -43,7 +43,7 @@ func readCommits(filepath string) (Commits, error) {
 func editCommits(commits Commits) ([]Commit, error) {
 	var m tea.Model = NewModel(commits)
 	p := tea.NewProgram(m, tea.WithAltScreen())
-	m, err := p.StartReturningModel()
+	m, err := p.Run()
 	if err != nil {
 		return nil, err
 	}
