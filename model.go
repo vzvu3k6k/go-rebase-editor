@@ -98,7 +98,7 @@ func (m *Model) applyCommits() {
 
 const (
 	commandWidth = 8
-	idWidth      = 8
+	idWidth      = 9
 	headerHeight = 1
 )
 
